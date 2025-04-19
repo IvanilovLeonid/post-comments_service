@@ -7,25 +7,30 @@ import (
 	"social-comments/internal/core/domain"
 	"social-comments/internal/core/errors"
 	"social-comments/internal/core/repository"
+	"social-comments/internal/infrastructure/pubsub"
 	"social-comments/pkg/logging"
 	"social-comments/pkg/utils/pagination"
+	"strconv"
 )
 
 type Service struct {
 	commentRepo repository.CommentRepository
 	postRepo    repository.PostRepository
 	logger      logger.Logger
+	broker      *pubsub.Broker
 }
 
 func NewService(
 	commentRepo repository.CommentRepository,
 	postRepo repository.PostRepository,
 	logger logger.Logger,
+	broker *pubsub.Broker,
 ) *Service {
 	return &Service{
 		commentRepo: commentRepo,
 		postRepo:    postRepo,
 		logger:      logger,
+		broker:      broker,
 	}
 }
 
@@ -57,6 +62,11 @@ func (s *Service) CreateComment(ctx context.Context, req domain.CreateCommentReq
 	if err != nil {
 		s.logger.Error("failed to create comment: %v", err)
 		return &domain.Comment{}, apperrors.ErrCreatingComment
+	}
+
+	if s.broker != nil {
+		s.logger.Info("Publishing comment for postID: %s", strconv.Itoa(createdComment.PostID))
+		s.broker.Publish(strconv.Itoa(createdComment.PostID), &createdComment)
 	}
 
 	return &createdComment, nil

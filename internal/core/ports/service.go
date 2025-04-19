@@ -4,6 +4,7 @@ import (
 	"context"
 	"social-comments/internal/core/domain"
 	"social-comments/internal/core/repository"
+	"social-comments/internal/infrastructure/pubsub"
 	"social-comments/internal/usecases/comment"
 	"social-comments/internal/usecases/post"
 	"social-comments/pkg/logging"
@@ -14,10 +15,10 @@ type Services struct {
 	CommentService
 }
 
-func NewServices(gateways *repository.Gateways, logger *logger.Logger) *Services {
+func NewServices(gateways *repository.Gateways, logger *logger.Logger, broker *pubsub.Broker) *Services {
 	return &Services{
 		PostService:    post.NewService(gateways.PostRepository, *logger),
-		CommentService: comment.NewService(gateways.CommentRepository, gateways.PostRepository, *logger),
+		CommentService: comment.NewService(gateways.CommentRepository, gateways.PostRepository, *logger, broker),
 	}
 }
 

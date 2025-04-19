@@ -3,9 +3,7 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	"social-comments/api/graphql/generated"
 	"social-comments/internal/core/domain"
-	"social-comments/internal/infrastructure/pubsub"
 )
 
 func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) (<-chan *domain.Comment, error) {

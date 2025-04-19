@@ -5,10 +5,12 @@ import (
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	apperrors "social-comments/internal/core/errors"
 	"social-comments/internal/core/ports"
+	"social-comments/internal/infrastructure/pubsub"
 	"social-comments/pkg/logging"
 )
 
 type Resolver struct {
+	Broker         *pubsub.Broker
 	PostService    ports.PostService
 	CommentService ports.CommentService
 	Logger         logger.Logger

@@ -16,6 +16,7 @@ import (
 	"social-comments/internal/core/repository"
 	"social-comments/internal/infrastructure/persistence/memory"
 	"social-comments/internal/infrastructure/persistence/postgres"
+	"social-comments/internal/infrastructure/pubsub"
 	lg "social-comments/pkg/logging"
 )
 
@@ -71,11 +72,12 @@ func main() {
 	}
 
 	logger.Info("Creating Services.")
-	services := ports.NewServices(gateways, logger)
+	services := ports.NewServices(gateways, logger, broker)
 
 	logger.Info("Creating graphql server.")
 	port := os.Getenv("PORT")
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers.Resolver{
+		Broker:         broker,
 		PostService:    services.PostService,
 		CommentService: services.CommentService,
 		Logger:         *logger,
