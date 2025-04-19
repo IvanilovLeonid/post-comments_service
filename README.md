@@ -88,82 +88,6 @@ make docker.down
 
 ### Примеры запросов
 
-#### Создание поста:
-```graphql
-mutation CreatePost {
-    CreatePost(
-        post: {
-            name: "Interesting Post"
-            content: "This is the content."
-            author: "Author Name"
-            commentsAllowed: true
-        }
-    ) {
-        id
-        createdAt
-        name
-        author
-        content
-    }
-}
-```
-
-#### Получение списка постов:
-```graphql
-query GetAllPosts {
-    GetAllPosts(page: 1, pageSize: 5) {
-        id
-        createdAt
-        name
-        author
-        content
-    }
-}
-```
-
-#### Получение деталей поста с комментариями:
-```graphql
-query GetPostById {
-    GetPostById(id: 1) {
-        id
-        createdAt
-        name
-        author
-        content
-        commentsAllowed
-        comments(page: 1, pageSize: 2) {
-            id
-            createdAt
-            author
-            content
-            post
-            replies {
-                id
-                createdAt
-                author
-                content
-                post
-                replyTo
-            }
-        }
-    }
-}
-```
-
-#### Создание комментария:
-```graphql
-mutation CreateComment {
-    CreateComment(input: { author: "Commenter", content: "Great post!", post: "1" }) {
-        id
-        createdAt
-        author
-        content
-        post
-        replyTo
-    }
-}
-```
-
 #### Подписка на новые комментарии:
 ```graphql
 subscription CommentsSubscription {
@@ -179,6 +103,7 @@ subscription CommentsSubscription {
 ```
 
 #### Тестирование через GraphQL Playground
+
 
 ##### 1. Подписка на комментарии
 Откройте вкладку и выполните следующий запрос:
