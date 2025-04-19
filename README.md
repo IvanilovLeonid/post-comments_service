@@ -78,100 +78,8 @@ make docker.down
 
 ## API
 
-Описание API реализовано в `.graphqls` файлах в директории `api/graphql`.
-Для тестирования можно использовать [Postman](https://www.postman.com/) или аналогичные инструменты. Примеры запросов:
-
 ### Примеры запросов
 
-#### Создание поста:
-```graphql
-mutation CreatePost {
-    CreatePost(
-        post: {
-            name: "Interesting Post"
-            content: "This is the content."
-            author: "Author Name"
-            commentsAllowed: true
-        }
-    ) {
-        id
-        createdAt
-        name
-        author
-        content
-    }
-}
-```
-
-#### Получение списка постов:
-```graphql
-query GetAllPosts {
-    GetAllPosts(page: 1, pageSize: 5) {
-        id
-        createdAt
-        name
-        author
-        content
-    }
-}
-```
-
-#### Получение деталей поста с комментариями:
-```graphql
-query GetPostById {
-    GetPostById(id: 1) {
-        id
-        createdAt
-        name
-        author
-        content
-        commentsAllowed
-        comments(page: 1, pageSize: 2) {
-            id
-            createdAt
-            author
-            content
-            post
-            replies {
-                id
-                createdAt
-                author
-                content
-                post
-                replyTo
-            }
-        }
-    }
-}
-```
-
-#### Создание комментария:
-```graphql
-mutation CreateComment {
-    CreateComment(input: { author: "Commenter", content: "Great post!", post: "1" }) {
-        id
-        createdAt
-        author
-        content
-        post
-        replyTo
-    }
-}
-```
-
-#### Подписка на новые комментарии:
-```graphql
-subscription CommentsSubscription {
-    CommentsSubscription(postId: "1") {
-        id
-        createdAt
-        author
-        content
-        post
-        replyTo
-    }
-}
-```
 
 #### Тестирование через GraphQL Playground
 
@@ -201,7 +109,6 @@ mutation CreateTestComment {
   }
 }
 ```
-
 ##### 3. Ожидаемый результат
 Во вкладке с подпиской появится:
 ```json
@@ -216,9 +123,7 @@ mutation CreateTestComment {
   }
 }
 ```
-
 ---
-
 ### Полный тестовый сценарий
 
 #### 1. Создание поста
