@@ -1,0 +1,10 @@
+scalar Time
+
+type PageInfo {
+    hasNextPage: Boolean!
+    endCursor: String
+}
+
+interface Node {
+    id: ID!
+}

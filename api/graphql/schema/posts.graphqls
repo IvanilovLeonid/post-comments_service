@@ -1,0 +1,35 @@
+type Post implements Node {
+    id: ID!
+    createdAt: Time!
+    title: String!
+    author: String!
+    content: String!
+    allowComments: Boolean!
+    comments(first: Int, after: String): [Comment!]!
+}
+
+input CreatePostInput {
+    title: String!
+    content: String!
+    author: String!
+    allowComments: Boolean! = true
+}
+
+type PostEdge {
+    node: Post!
+    cursor: String!
+}
+
+type PostConnection {
+    edges: [PostEdge!]!
+    pageInfo: PageInfo!
+}
+
+extend type Query {
+    posts(first: Int, after: String): PostConnection!
+    post(id: ID!): Post
+}
+
+extend type Mutation {
+    createPost(input: CreatePostInput!): Post!
+}

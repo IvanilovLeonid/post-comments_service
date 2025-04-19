@@ -1,0 +1,24 @@
+type Comment implements Node {
+    id: ID!
+    createdAt: Time!
+    author: String!
+    text: String!
+    postId: ID!
+    parentId: ID
+    replies(first: Int, after: String): [Comment!]!
+}
+
+input CreateCommentInput {
+    author: String!
+    text: String!
+    postId: ID!
+    parentId: ID
+}
+
+extend type Mutation {
+    createComment(input: CreateCommentInput!): Comment!
+}
+
+extend type Subscription {
+    commentAdded(postId: ID!): Comment!
+}

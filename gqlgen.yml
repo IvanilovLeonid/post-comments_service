@@ -1,0 +1,31 @@
+schema:
+  - api/graphql/schema/common.graphqls
+  - api/graphql/schema/posts.graphqls
+  - api/graphql/schema/comments.graphqls
+
+exec:
+  filename: api/graphql/generated/generated.go
+  package: generated
+
+model:
+  filename: internal/core/domain/models_gen.go
+  package: domain
+
+resolver:
+  filename: api/graphql/resolvers/resolver.go # Базовый файл резолвера
+  package: resolvers
+  type: Resolver
+  layout: follow-schema
+  dir: api/graphql/resolvers # Ключевое изменение - указываем директорию
+
+autobind:
+  - "social-comments/internal/core/domain"
+
+models:
+  Node:
+    model: "social-comments/internal/core/domain.Node"
+  Post:
+    model: "social-comments/internal/core/domain.Post"
+    fields:
+      id:
+        resolver: true
