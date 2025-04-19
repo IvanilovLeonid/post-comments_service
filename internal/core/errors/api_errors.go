@@ -33,22 +33,6 @@ func (e APIError) MarshalJSON() ([]byte, error) {
 	})
 }
 
-// Predefined errors
-var (
-	ErrBadRequest   = APIError{Code: "BAD_REQUEST", Message: "Invalid request"}
-	ErrUnauthorized = APIError{Code: "UNAUTHORIZED", Message: "Authentication required"}
-	ErrNotFound     = APIError{Code: "NOT_FOUND", Message: "Resource not found"}
-	// ... другие предопределенные ошибки
-)
-
-// New создает новую ошибку API
-func New(code, message string) APIError {
-	return APIError{
-		Code:    code,
-		Message: message,
-	}
-}
-
 func (e *APIError) Extensions() map[string]interface{} {
 	return map[string]interface{}{
 		"code":    e.Code,

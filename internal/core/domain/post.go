@@ -54,5 +54,5 @@ func (p Post) ToResponse() PostResponse {
 }
 
 func (p Post) GetID() string {
-	return strconv.Itoa(p.ID) // Конвертируем int ID в string
+	return strconv.Itoa(p.ID)
 }

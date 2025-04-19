@@ -1,0 +1,59 @@
+services:
+  app:
+    build: ./
+    container_name: social-comments
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      USE_IN_MEMORY: "false"
+    networks:
+      - posts_net
+
+
+  postgres:
+    image: postgres:16
+    container_name: posts_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DBNAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres -U myuser" ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      posts_net:
+        aliases:
+          - database
+
+  migrate:
+    image: migrate/migrate:v4.16.2
+    container_name: migrate
+    volumes:
+      - ./migrations:/migrations
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DBNAME: ${POSTGRES_DBNAME}
+    command:
+      - "-path=/migrations"
+      - "-database=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DBNAME}?sslmode=disable"
+      - "up"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - posts_net
+
+networks:
+  posts_net:

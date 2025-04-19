@@ -38,7 +38,7 @@ func (s *Service) CreatePost(ctx context.Context, req domain.CreatePostRequest) 
 		AllowComments: req.AllowComments,
 	}
 
-	createdPost, err := s.repo.Create(ctx, post) // ОШИБКА Cannot use 'post' (type domain. Post) as the type domain. CreatePostRequest
+	createdPost, err := s.repo.Create(ctx, post)
 	if err != nil {
 		s.logger.Error("failed to create post: %v", err)
 		return &domain.PostResponse{}, apperrors.ErrCreatingPost

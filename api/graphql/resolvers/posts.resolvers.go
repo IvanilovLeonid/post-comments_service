@@ -84,7 +84,6 @@ func (r *queryResolver) Posts(ctx context.Context, first *int, after *string) (*
 		}
 	}
 
-	// Добавляем принудительное логирование
 	fmt.Printf("\n[Resolver] Params: first=%v, after=%v -> limit=%d, offset=%d\n",
 		first, after, limit, offset)
 
@@ -99,7 +98,7 @@ func (r *queryResolver) Posts(ctx context.Context, first *int, after *string) (*
 	for i, post := range posts {
 		edges[i] = &domain.PostEdge{
 			Node:   &post,
-			Cursor: strconv.Itoa(offset + i + 1), // Следующий курсор
+			Cursor: strconv.Itoa(offset + i + 1),
 		}
 	}
 

@@ -7,6 +7,7 @@ package resolvers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"social-comments/api/graphql/generated"
 	"social-comments/internal/core/domain"
 	"strconv"
@@ -23,13 +24,11 @@ func (r *commentResolver) Replies(ctx context.Context, obj *domain.Comment, firs
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input domain.CreateCommentInput) (*domain.Comment, error) {
-	// Конвертируем PostID из string в int
 	postID, err := strconv.Atoi(input.PostID)
 	if err != nil {
 		return nil, r.wrapGQLError(errors.New("invalid post ID format"))
 	}
 
-	// Обрабатываем ParentID (может быть nil)
 	var parentID *int
 	if input.ParentID != nil {
 		pid, err := strconv.Atoi(*input.ParentID)
@@ -54,6 +53,32 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input domain.Creat
 }
 
 // CommentAdded is the resolver for the commentAdded field.
+func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) (<-chan *domain.Comment, error) {
+	broker := r.Broker
+	if broker == nil {
+		return nil, fmt.Errorf("broker not initialized")
+	}
+
+	commentsChan := make(chan *domain.Comment)
+
+	eventChan := broker.Subscribe(ctx, postID)
+
+	go func() {
+		defer close(commentsChan)
+		for {
+			select {
+			case event := <-eventChan:
+				if event != nil {
+					commentsChan <- event.Comment
+				}
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	return commentsChan, nil
+}
 
 // Comment returns generated.CommentResolver implementation.
 func (r *Resolver) Comment() generated.CommentResolver { return &commentResolver{r} }

@@ -67,6 +67,8 @@ func main() {
 		gateways = repository.NewGateways(posts, comments)
 	} else {
 		posts := postgres.NewPostRepository(postgresDb)
+		posts.Create(context.Background(), domain.Post{Title: "Test Post 1", Content: "Content 1", Author: "Admin"})
+		posts.Create(context.Background(), domain.Post{Title: "Test Post 2", Content: "Content 2", Author: "Admin"})
 		comments := postgres.NewCommentRepository(postgresDb)
 		gateways = repository.NewGateways(posts, comments)
 	}
