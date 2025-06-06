@@ -5,6 +5,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	_ "github.com/lib/pq"
+	"github.com/rs/cors"
 	"net/http"
 	"os"
 	"social-comments/api/graphql/generated"
@@ -85,8 +86,15 @@ func main() {
 		Logger:         *logger,
 	}}))
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+	})
+
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", c.Handler(srv))
 
 	logger.Info("Connect to http://localhost:%s/ for GraphQL playground", port)
 	http.ListenAndServe(":"+port, nil)
