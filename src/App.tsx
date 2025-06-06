@@ -1,13 +1,15 @@
+import { Routes, Route } from 'react-router-dom';
 import PostList from './components/PostList';
-import CreatePost from './components/CreatePost';
+import PostDetail from './components/PostDetail';
+import CreatePostForm from './components/CreatePostForm';
 
-export default function App() {
-    return (
-        <div style={{ padding: '1rem' }}>
-            <h1>📝 Социальные посты</h1>
-            <CreatePost />
-            <hr />
-            <PostList />
-        </div>
-    );
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<><CreatePostForm /><PostList /></>} />
+      <Route path="/post/:id" element={<PostDetail />} />
+    </Routes>
+  );
 }
+
+export default App;
